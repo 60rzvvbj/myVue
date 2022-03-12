@@ -5,6 +5,14 @@ export default function createElement(vnode) {
       dom.setAttribute(vnode.data.attrs[i].name, vnode.data.attrs[i].value);
     }
   }
+  if (vnode.data.events) {
+    for (let i = 0; i < vnode.data.events.length; i++) {
+      dom.addEventListener(
+        vnode.data.events[i].eventType,
+        vnode.data.events[i].value
+      );
+    }
+  }
   if (vnode.text != undefined) {
     dom.innerText = vnode.text;
   } else {

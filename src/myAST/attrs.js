@@ -20,6 +20,11 @@ export default function attrs(str) {
         other.bind = [];
       }
       other.bind.push({ attr: name.substring(1), value });
+    } else if (name.startsWith("@")) {
+      if (!other.events) {
+        other.events = [];
+      }
+      other.events.push({ eventType: name.substring(1), value });
     } else {
       attrs.push({ name, value });
     }

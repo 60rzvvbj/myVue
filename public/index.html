@@ -9,13 +9,15 @@
   <body>
     <div id="app">
       <div class="main">
-        <ul>
+        <button @click="test()">按钮</button>
+        <ul @mouseover="mo()">
           <li :key="'E'" v-if="flag">E</li>
           <li :key="'A'">A</li>
           <li :key="'B'">B</li>
           <li :key="'C'">C</li>
           <li :key="'D'">D</li>
         </ul>
+        <div :class="getClass()"></div>
       </div>
     </div>
     <script src="/dist/bundle.js"></script>
@@ -25,7 +27,19 @@
         data() {
           return {
             flag: false,
+            className: "asd qwe zxc",
           };
+        },
+        methods: {
+          getClass() {
+            return "aaa bbb ccc";
+          },
+          test() {
+            console.log("test");
+          },
+          mo() {
+            console.log("mo");
+          },
         },
         created() {
           console.log("created");
