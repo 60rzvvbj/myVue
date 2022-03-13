@@ -9,8 +9,8 @@
   <body>
     <div id="app">
       <div class="main">
-        <button @click="test()">按钮</button>
-        <ul @mouseover="mo()">
+        <button @click="test">按钮</button>
+        <ul>
           <li :key="'E'" v-if="flag">E</li>
           <li :key="'A'">A</li>
           <li :key="'B'">B</li>
@@ -34,8 +34,10 @@
           getClass() {
             return "aaa bbb ccc";
           },
-          test() {
+          test(e) {
+            console.log(e);
             console.log("test");
+            console.log(this);
           },
           mo() {
             console.log("mo");

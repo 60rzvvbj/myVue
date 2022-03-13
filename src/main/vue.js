@@ -4,6 +4,7 @@ import findData from "./findData.js";
 import doWatcher from "./doWatcher.js";
 import getVDom from "./getVDom.js";
 import patch from "../myDiff/patch.js";
+import createElement from "../myDiff/createElement.js";
 
 export default class Vue {
   constructor(options) {
@@ -16,12 +17,14 @@ export default class Vue {
       this[key] = _data[key];
     }
     let ob = observe(this);
+    this._data = _data;
 
     // 初始化methods
     let _methods = options.methods;
     for (let key in _methods) {
       this[key] = _methods[key];
     }
+    this._methods = _methods;
 
     // created生命周期
     options.created && options.created.call(this);
@@ -43,6 +46,7 @@ export default class Vue {
       options.beforeUpdate && options.beforeUpdate.call(this);
 
       // update
+      Vue.prototype.now = this;
       let vDom = getVDom(this, ast);
       patch(this.$vDom, vDom);
       this.$vDom = vDom;
@@ -58,6 +62,7 @@ export default class Vue {
     options.beforeMount && options.beforeMount.call(this);
 
     // 初始化虚拟dom
+    Vue.prototype.now = this;
     this.$vDom = getVDom(this, ast);
     this.$el = el;
 

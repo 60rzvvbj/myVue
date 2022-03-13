@@ -1,5 +1,6 @@
 import h from "../myDiff/h.js";
 import templateToTokens from "../myTemplateEngine/templateToTokens";
+import Vue from "./vue.js";
 
 function parse(data, expression) {
   let res;
@@ -17,20 +18,28 @@ function parse(data, expression) {
   return res;
 }
 
-function parseEvent(methods, expression) {
-  let statement = "";
-  for (let m in methods) {
-    statement += `let ${m} = methods['${m}'];\n`;
+function parseEvent(expression) {
+  let vue = Vue.prototype.now;
+  let methods = vue._methods;
+  if (methods.hasOwnProperty(expression)) {
+    return methods[expression];
+  } else {
+    let statement = "";
+    for (let m in methods) {
+      if (typeof methods[m] == "function") {
+        statement += `let ${m} = methods['${m}'].bind(vue);\n`;
+      }
+    }
+
+    let code = `
+			${statement};
+			${expression};
+		`;
+
+    return function () {
+      eval(code);
+    };
   }
-
-  let code = `
-		${statement};
-		${expression};
-	`;
-
-  return function (e) {
-    eval(code);
-  };
 }
 
 export default function getVDom(data, ast) {
@@ -63,7 +72,7 @@ export default function getVDom(data, ast) {
     // 处理events
     if (ast.events) {
       for (let i = 0; i < ast.events.length; i++) {
-        ast.events[i].value = parseEvent(data, ast.events[i].value);
+        ast.events[i].value = parseEvent(ast.events[i].value);
       }
       properties.events = ast.events;
     }

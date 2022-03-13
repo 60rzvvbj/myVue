@@ -1,3 +1,5 @@
+import Vue from "../main/vue";
+
 export default function createElement(vnode) {
   let dom = document.createElement(vnode.sel);
   if (vnode.data.attrs) {
@@ -9,7 +11,7 @@ export default function createElement(vnode) {
     for (let i = 0; i < vnode.data.events.length; i++) {
       dom.addEventListener(
         vnode.data.events[i].eventType,
-        vnode.data.events[i].value
+        vnode.data.events[i].value.bind(Vue.prototype.now)
       );
     }
   }
