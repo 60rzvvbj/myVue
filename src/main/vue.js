@@ -11,7 +11,7 @@ export default class Vue {
     // beforeCreate生命周期
     options.beforeCreate && options.beforeCreate.call(this);
 
-    // 初始化数据
+    // 初始化data
     let _data = options.data();
     for (let key in _data) {
       this[key] = _data[key];

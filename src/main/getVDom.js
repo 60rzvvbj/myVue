@@ -43,12 +43,26 @@ function parseEvent(expression) {
 }
 
 export default function getVDom(data, ast) {
-  if (ast.type == "container") {
+  if (ast.type == "container" || ast.type == "element") {
     // 处理v-if
     if (ast.if) {
       if (!parse(data, ast.if)) {
         return [];
       }
+    }
+
+    // 处理v-for
+    if (ast.for) {
+      let arr = parse(data, ast.for.arr);
+      let res = [];
+      for (let i = 0; i < arr.length; i++) {
+        let chData = { ...arr[i] };
+        chData[ast.for.item] = arr[i];
+        let chAST = JSON.parse(JSON.stringify(ast));
+        delete chAST.for;
+        res.push(getVDom(chData, chAST));
+      }
+      return res;
     }
 
     let properties = {
@@ -98,7 +112,11 @@ export default function getVDom(data, ast) {
         let res = [];
         for (let i = 0; i < ast.children.length; i++) {
           let child = getVDom(data, ast.children[i]);
-          if (child.length != 0) {
+          if (Array.isArray(child)) {
+            for (let i = 0; i < child.length; i++) {
+              res.push(child[i]);
+            }
+          } else {
             res.push(child);
           }
         }
@@ -106,7 +124,7 @@ export default function getVDom(data, ast) {
         return h(ast.tag, properties, res);
       }
     } else {
-      return [];
+      return h(ast.tag, properties, []);
     }
   } else {
     throw new Error("type error");

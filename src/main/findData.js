@@ -7,6 +7,21 @@ export default function findData(ast) {
     res.push(ast.if);
   }
 
+  if (ast.for) {
+    res.push(ast.for.arr);
+
+    return res;
+    // let arr = parse(data, ast.for.arr);
+    // let res = [];
+    // for (let i = 0; i < arr.length; i++) {
+    //   arr[i][ast.for.item] = arr[i];
+    //   let chAST = JSON.parse(JSON.stringify(ast));
+    //   delete chAST.for;
+    //   res.push(getVDom(arr[i], chAST));
+    // }
+    // return res;
+  }
+
   if (ast.bind) {
     for (let i = 0; i < ast.bind.length; i++) {
       res.push(ast.bind[i].value);

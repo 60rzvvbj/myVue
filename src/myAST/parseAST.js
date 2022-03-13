@@ -1,6 +1,8 @@
 import attributes from "./attrs.js";
 import Scanner from "./scanner.js";
 
+const singleLabel = ["input", "img", "hr", "br"];
+
 export default function parseAST(str) {
   let arr = [];
   let sca = new Scanner(str);
@@ -26,7 +28,12 @@ export default function parseAST(str) {
       if (arr.length != 0 && arr[arr.length - 1].type == "text") {
         arr.pop();
       }
-      arr.push({ type: "container", tag, attrs, ...other });
+      arr.push({
+        type: singleLabel.includes(tag) ? "element" : "container",
+        tag,
+        attrs,
+        ...other,
+      });
     }
     sca.scan(">");
   }
@@ -38,6 +45,8 @@ export default function parseAST(str) {
       item.children = [];
       stack[stack.length - 1].children.push(item);
       stack.push(item);
+    } else if (item.type == "element") {
+      stack[stack.length - 1].children.push(item);
     } else if (item.type == "text") {
       stack[stack.length - 1].children.push(item);
     } else if (item.type == "end") {

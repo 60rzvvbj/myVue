@@ -15,6 +15,9 @@ export default function attrs(str) {
 
     if (name == "v-if") {
       other.if = value;
+    } else if (name == "v-for") {
+      let strArr = value.split(" in ");
+      other.for = { item: strArr[0], arr: strArr[1] };
     } else if (name.startsWith(":")) {
       if (!other.bind) {
         other.bind = [];
